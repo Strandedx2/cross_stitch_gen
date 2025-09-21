@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cross Stitch Pattern Generator</title>
+    <!-- Google Fonts for better cross-stitch pattern fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Press+Start+2P&family=Fredoka:wght@400;600&family=Creepster&family=Nosifer&family=Bungee&family=Righteous&family=Bangers&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -19,15 +23,29 @@
                 <form id="pattern-form">
                     <div class="form-group">
                         <label for="text-input">Text to Convert:</label>
-                        <textarea id="text-input" rows="3" placeholder="Enter your text here..." required>Hello World</textarea>
+                        <textarea id="text-input" rows="4" placeholder="Enter your text here...&#10;Use Enter for new lines&#10;Example:&#10;Home Sweet&#10;Home" required>Hello World</textarea>
+                        <small class="help-text">Tip: Press Enter to create new lines. Each line will be centered automatically.</small>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="lines-input">Number of Lines:</label>
-                            <input type="number" id="lines-input" min="1" max="10" value="1">
+                            <label for="max-lines">Max Lines to Display:</label>
+                            <input type="number" id="max-lines" min="1" max="10" value="5">
+                            <small class="help-text">Limits how many lines from your text will be used</small>
                         </div>
 
+                        <div class="form-group">
+                            <label for="line-spacing">Line Spacing:</label>
+                            <select id="line-spacing">
+                                <option value="tight">Tight</option>
+                                <option value="normal" selected>Normal</option>
+                                <option value="loose">Loose</option>
+                                <option value="extra-loose">Extra Loose</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
                         <div class="form-group">
                             <label for="font-size">Font Size:</label>
                             <select id="font-size">
@@ -43,17 +61,43 @@
                         <div class="form-group">
                             <label for="font-family">Font Style:</label>
                             <select id="font-family">
-                                <option value="pixel">Pixel Art</option>
-                                <option value="serif" selected>Serif</option>
-                                <option value="sans-serif">Sans Serif</option>
+                                <option value="press-start">Pixel Perfect (Press Start 2P)</option>
+                                <option value="orbitron">Modern Tech (Orbitron)</option>
+                                <option value="fredoka" selected>Friendly Round (Fredoka)</option>
+                                <option value="bungee">Bold Display (Bungee)</option>
+                                <option value="righteous">Strong Sans (Righteous)</option>
+                                <option value="bangers">Comic Style (Bangers)</option>
+                                <option value="serif">Classic Serif</option>
+                                <option value="sans-serif">Clean Sans Serif</option>
                                 <option value="monospace">Monospace</option>
-                                <option value="script">Script</option>
+                                <option value="creepster">Halloween (Creepster)</option>
+                                <option value="nosifer">Gothic (Nosifer)</option>
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label for="stitch-color">Stitch Color:</label>
                             <input type="color" id="stitch-color" value="#2c5530">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fabric-color">Fabric Color:</label>
+                            <select id="fabric-color">
+                                <option value="white" selected>White Aida</option>
+                                <option value="cream">Cream Aida</option>
+                                <option value="light-gray">Light Gray</option>
+                                <option value="beige">Natural Beige</option>
+                                <option value="light-blue">Light Blue</option>
+                                <option value="light-pink">Light Pink</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="show-grid">Show Grid:</label>
+                            <input type="checkbox" id="show-grid" checked>
+                            <small class="help-text">Toggle grid overlay for easier counting</small>
                         </div>
                     </div>
 
@@ -63,6 +107,14 @@
 
             <div class="pattern-section">
                 <h2>Generated Pattern</h2>
+                <div class="pattern-controls">
+                    <div class="zoom-controls">
+                        <button id="zoom-out">Zoom Out</button>
+                        <span id="zoom-level">100%</span>
+                        <button id="zoom-in">Zoom In</button>
+                        <button id="zoom-reset">Reset View</button>
+                    </div>
+                </div>
                 <div class="pattern-container">
                     <canvas id="pattern-canvas" width="800" height="600"></canvas>
                 </div>
@@ -70,11 +122,15 @@
                 <div class="pattern-info" id="pattern-info" style="display: none;">
                     <p>Pattern Size: <span id="pattern-dimensions"></span></p>
                     <p>Total Stitches: <span id="stitch-count"></span></p>
+                    <p>Estimated Time: <span id="estimated-time"></span></p>
+                    <p>Recommended Fabric: <span id="fabric-recommendation"></span></p>
+                    <p>Floss Needed: <span id="floss-needed"></span></p>
                 </div>
 
                 <div class="export-controls" id="export-controls" style="display: none;">
                     <button id="download-pattern">Download Pattern (PNG)</button>
                     <button id="download-grid">Download with Grid (PNG)</button>
+                    <button id="download-pdf">Download Pattern (PDF)</button>
                 </div>
             </div>
         </main>
@@ -85,5 +141,7 @@
     </div>
 
     <script src="script.js"></script>
+    <!-- jsPDF for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>

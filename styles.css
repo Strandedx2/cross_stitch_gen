@@ -8,7 +8,7 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #000000 0%, #ffffff 100%);
     min-height: 100vh;
     color: #333;
 }
@@ -97,6 +97,14 @@ input:focus, textarea:focus, select:focus {
     border-color: #2c5530;
 }
 
+.help-text {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #666;
+    font-style: italic;
+}
+
 textarea {
     resize: vertical;
     min-height: 80px;
@@ -104,6 +112,13 @@ textarea {
 
 input[type="color"] {
     height: 45px;
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    width: auto;
+    height: 20px;
+    margin-right: 8px;
     cursor: pointer;
 }
 
@@ -145,16 +160,54 @@ button:active {
     font-size: 1.5em;
 }
 
+.pattern-controls {
+    margin-bottom: 15px;
+}
+
+.zoom-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.zoom-controls button {
+    background: #4a7c59;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 0;
+    width: auto;
+}
+
+.zoom-controls button:hover {
+    background: #2c5530;
+    transform: none;
+    box-shadow: none;
+}
+
+#zoom-level {
+    font-weight: 600;
+    color: #2c5530;
+    min-width: 50px;
+    text-align: center;
+}
+
 .pattern-container {
     border: 3px solid #ddd;
     border-radius: 10px;
-    overflow: hidden;
+    overflow: auto;
     margin-bottom: 20px;
     background: #f9f9f9;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 400px;
+    max-height: 600px;
+    position: relative;
 }
 
 #pattern-canvas {
@@ -229,6 +282,25 @@ footer {
     .export-controls button {
         width: 100%;
     }
+    
+    .zoom-controls {
+        justify-content: center;
+    }
+    
+    .zoom-controls button {
+        padding: 10px 12px;
+        font-size: 16px;
+    }
+    
+    .pattern-container {
+        min-height: 300px;
+        max-height: 400px;
+    }
+    
+    #pattern-canvas {
+        max-width: 100%;
+        height: auto;
+    }
 }
 
 @media (max-width: 480px) {
@@ -242,5 +314,23 @@ footer {
     
     header h1 {
         font-size: 1.5em;
+    }
+    
+    .zoom-controls {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .zoom-controls button {
+        width: 100%;
+        margin: 0;
+    }
+    
+    #zoom-level {
+        order: -1;
+        font-size: 18px;
+        padding: 8px;
+        background: #f0f0f0;
+        border-radius: 5px;
     }
 }
