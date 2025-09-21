@@ -77,45 +77,8 @@ class CrossStitchGenerator {
             this.resetZoom();
         });
         
-        // Real-time updates
-        document.getElementById('text-input').addEventListener('input', () => {
-            this.debounceGenerate();
-        });
-        
-        document.getElementById('max-lines').addEventListener('input', () => {
-            this.debounceGenerate();
-        });
-        
-        document.getElementById('line-spacing').addEventListener('change', () => {
-            this.generatePattern();
-        });
-        
-        document.getElementById('font-size').addEventListener('change', () => {
-            this.generatePattern();
-        });
-        
-        document.getElementById('font-family').addEventListener('change', () => {
-            this.generatePattern();
-        });
-        
-        document.getElementById('stitch-color').addEventListener('change', () => {
-            this.generatePattern();
-        });
-        
-        document.getElementById('fabric-color').addEventListener('change', () => {
-            this.generatePattern();
-        });
-        
-        document.getElementById('show-grid').addEventListener('change', () => {
-            this.generatePattern();
-        });
-    }
-    
-    debounceGenerate() {
-        clearTimeout(this.debounceTimer);
-        this.debounceTimer = setTimeout(() => {
-            this.generatePattern();
-        }, 300);
+        // Remove real-time updates - pattern only generates when button is clicked
+        // All pattern generation is now controlled by the form submit button
     }
     
     generatePattern() {
