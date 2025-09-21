@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cross Stitch Pattern Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Cross Stitch Pattern Generator</h1>
+            <p>Create beautiful cross stitch patterns from your text</p>
+        </header>
+
+        <main>
+            <div class="controls-section">
+                <h2>Pattern Settings</h2>
+                <form id="pattern-form">
+                    <div class="form-group">
+                        <label for="text-input">Text to Convert:</label>
+                        <textarea id="text-input" rows="3" placeholder="Enter your text here..." required>Hello World</textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="lines-input">Number of Lines:</label>
+                            <input type="number" id="lines-input" min="1" max="10" value="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="font-size">Font Size:</label>
+                            <select id="font-size">
+                                <option value="small">Small (8x8)</option>
+                                <option value="medium" selected>Medium (12x12)</option>
+                                <option value="large">Large (16x16)</option>
+                                <option value="extra-large">Extra Large (20x20)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="font-family">Font Style:</label>
+                            <select id="font-family">
+                                <option value="pixel">Pixel Art</option>
+                                <option value="serif" selected>Serif</option>
+                                <option value="sans-serif">Sans Serif</option>
+                                <option value="monospace">Monospace</option>
+                                <option value="script">Script</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="stitch-color">Stitch Color:</label>
+                            <input type="color" id="stitch-color" value="#2c5530">
+                        </div>
+                    </div>
+
+                    <button type="submit">Generate Pattern</button>
+                </form>
+            </div>
+
+            <div class="pattern-section">
+                <h2>Generated Pattern</h2>
+                <div class="pattern-container">
+                    <canvas id="pattern-canvas" width="800" height="600"></canvas>
+                </div>
+                
+                <div class="pattern-info" id="pattern-info" style="display: none;">
+                    <p>Pattern Size: <span id="pattern-dimensions"></span></p>
+                    <p>Total Stitches: <span id="stitch-count"></span></p>
+                </div>
+
+                <div class="export-controls" id="export-controls" style="display: none;">
+                    <button id="download-pattern">Download Pattern (PNG)</button>
+                    <button id="download-grid">Download with Grid (PNG)</button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Create beautiful cross stitch patterns with custom text, fonts, and sizes!</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
