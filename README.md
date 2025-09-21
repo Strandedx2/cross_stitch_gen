@@ -121,14 +121,9 @@ A beautiful, modern web application that converts text into professional cross s
 
 To run locally:
 ```bash
-# Using Python 3
-python3 -m http.server 8000
 
 # Using Node.js
 npx http-server
-
-# Using PHP
-php -S localhost:8000
 ```
 
 Then open `http://localhost:8000` in your browser.
