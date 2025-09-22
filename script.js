@@ -188,23 +188,31 @@ class CrossStitchGenerator {
         const width = imageData.width;
         const height = imageData.height;
         
-        // Calculate pattern dimensions - improved scaling
-        const scaleFactor = Math.max(1, Math.round(this.gridSize / 8)); // Better scaling based on grid size
+        // Calculate pattern dimensions - improved scaling with better padding
+        const scaleFactor = Math.max(1, Math.round(this.gridSize / 8));
         const patternWidth = Math.ceil(width / scaleFactor) * this.gridSize;
         const patternHeight = Math.ceil(height / scaleFactor) * this.gridSize;
         
-        // Resize canvas with adequate padding
-        this.canvas.width = patternWidth + 60;
-        this.canvas.height = patternHeight + 60;
+        // Ensure minimum canvas size and proper padding
+        const minWidth = 200;
+        const minHeight = 150;
+        const padding = 80; // Increased padding
+        
+        this.canvas.width = Math.max(minWidth, patternWidth + padding);
+        this.canvas.height = Math.max(minHeight, patternHeight + padding);
         
         // Clear with fabric color background
         const bgColor = this.fabricColors[fabricColor] || '#ffffff';
         this.ctx.fillStyle = bgColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
+        // Calculate starting position to center the pattern
+        const startX = (this.canvas.width - patternWidth) / 2;
+        const startY = (this.canvas.height - patternHeight) / 2;
+        
         // Convert pixels to stitches with better algorithm
         let stitchCount = 0;
-        const threshold = 180; // Adjustable brightness threshold
+        const threshold = 180;
         
         for (let y = 0; y < height; y += scaleFactor) {
             for (let x = 0; x < width; x += scaleFactor) {
@@ -219,7 +227,7 @@ class CrossStitchGenerator {
                         const pixelIndex = ((y + sy) * width + (x + sx)) * 4;
                         const alpha = data[pixelIndex + 3];
                         
-                        if (alpha > 50) { // Only consider visible pixels
+                        if (alpha > 50) {
                             const red = data[pixelIndex];
                             const green = data[pixelIndex + 1];
                             const blue = data[pixelIndex + 2];
@@ -238,11 +246,21 @@ class CrossStitchGenerator {
                     const avgBrightness = totalBrightness / samples;
                     
                     if (avgAlpha > 128 && avgBrightness < threshold) {
-                        const stitchX = 30 + (x / scaleFactor) * this.gridSize;
-                        const stitchY = 30 + (y / scaleFactor) * this.gridSize;
+                        // Calculate exact grid position to align with grid lines
+                        const gridX = Math.floor(x / scaleFactor);
+                        const gridY = Math.floor(y / scaleFactor);
                         
-                        this.drawStitch(stitchX, stitchY, stitchColor);
-                        stitchCount++;
+                        // Position stitch at exact grid intersection
+                        const stitchX = startX + gridX * this.gridSize;
+                        const stitchY = startY + gridY * this.gridSize;
+                        
+                        // Ensure stitch is within canvas bounds and grid-aligned
+                        if (stitchX >= 0 && stitchY >= 0 && 
+                            stitchX + this.gridSize <= this.canvas.width && 
+                            stitchY + this.gridSize <= this.canvas.height) {
+                            this.drawStitch(stitchX, stitchY, stitchColor);
+                            stitchCount++;
+                        }
                     }
                 }
             }
@@ -250,7 +268,7 @@ class CrossStitchGenerator {
         
         // Draw grid if needed
         if (showGrid) {
-            this.drawGrid(patternWidth, patternHeight, fabricColor);
+            this.drawGrid(patternWidth, patternHeight, fabricColor, startX, startY);
         }
         
         // Update stitch count with better calculations
@@ -261,6 +279,11 @@ class CrossStitchGenerator {
     
     drawStitch(x, y, color) {
         const size = this.gridSize - 1;
+        
+        // Ensure coordinates are within reasonable bounds
+        if (x < 0 || y < 0 || x + size > this.canvas.width || y + size > this.canvas.height) {
+            return; // Skip drawing if out of bounds
+        }
         
         // Draw X stitch with better styling
         this.ctx.strokeStyle = color;
@@ -274,14 +297,14 @@ class CrossStitchGenerator {
         this.ctx.shadowOffsetX = 0.5;
         this.ctx.shadowOffsetY = 0.5;
         
-        // Draw the cross stitch X
+        // Draw the cross stitch X with proper alignment
         this.ctx.beginPath();
         // First diagonal: top-left to bottom-right
-        this.ctx.moveTo(x + 1, y + 1);
-        this.ctx.lineTo(x + size - 1, y + size - 1);
+        this.ctx.moveTo(Math.round(x + 1), Math.round(y + 1));
+        this.ctx.lineTo(Math.round(x + size - 1), Math.round(y + size - 1));
         // Second diagonal: top-right to bottom-left
-        this.ctx.moveTo(x + size - 1, y + 1);
-        this.ctx.lineTo(x + 1, y + size - 1);
+        this.ctx.moveTo(Math.round(x + size - 1), Math.round(y + 1));
+        this.ctx.lineTo(Math.round(x + 1), Math.round(y + size - 1));
         this.ctx.stroke();
         
         // Reset shadow
@@ -294,33 +317,36 @@ class CrossStitchGenerator {
         if (this.gridSize > 10) {
             this.ctx.fillStyle = color;
             const centerSize = Math.max(1, this.gridSize / 8);
-            this.ctx.fillRect(
-                x + size/2 - centerSize/2, 
-                y + size/2 - centerSize/2, 
-                centerSize, 
-                centerSize
-            );
+            const centerX = Math.round(x + size/2 - centerSize/2);
+            const centerY = Math.round(y + size/2 - centerSize/2);
+            this.ctx.fillRect(centerX, centerY, centerSize, centerSize);
         }
     }
     
-    drawGrid(patternWidth, patternHeight, fabricColor) {
-        // Base grid lines (light)
+    drawGrid(patternWidth, patternHeight, fabricColor, startX, startY) {
+        // Base grid lines (light) - align with actual stitch positions
         this.ctx.strokeStyle = '#e8e8e8';
         this.ctx.lineWidth = 0.5;
         
-        // Vertical lines
-        for (let x = 30; x <= 30 + patternWidth; x += this.gridSize) {
+        // Calculate the actual grid bounds based on stitch positions
+        const gridStartX = Math.floor(startX / this.gridSize) * this.gridSize;
+        const gridStartY = Math.floor(startY / this.gridSize) * this.gridSize;
+        const gridEndX = gridStartX + Math.ceil(patternWidth / this.gridSize) * this.gridSize;
+        const gridEndY = gridStartY + Math.ceil(patternHeight / this.gridSize) * this.gridSize;
+        
+        // Vertical lines - align with stitch columns
+        for (let x = gridStartX; x <= gridEndX + this.gridSize; x += this.gridSize) {
             this.ctx.beginPath();
-            this.ctx.moveTo(x, 30);
-            this.ctx.lineTo(x, 30 + patternHeight);
+            this.ctx.moveTo(x, gridStartY);
+            this.ctx.lineTo(x, gridEndY + this.gridSize);
             this.ctx.stroke();
         }
         
-        // Horizontal lines
-        for (let y = 30; y <= 30 + patternHeight; y += this.gridSize) {
+        // Horizontal lines - align with stitch rows
+        for (let y = gridStartY; y <= gridEndY + this.gridSize; y += this.gridSize) {
             this.ctx.beginPath();
-            this.ctx.moveTo(30, y);
-            this.ctx.lineTo(30 + patternWidth, y);
+            this.ctx.moveTo(gridStartX, y);
+            this.ctx.lineTo(gridEndX + this.gridSize, y);
             this.ctx.stroke();
         }
         
@@ -328,17 +354,17 @@ class CrossStitchGenerator {
         this.ctx.strokeStyle = '#c0c0c0';
         this.ctx.lineWidth = 1;
         
-        for (let x = 30; x <= 30 + patternWidth; x += this.gridSize * 10) {
+        for (let x = gridStartX; x <= gridEndX + this.gridSize; x += this.gridSize * 10) {
             this.ctx.beginPath();
-            this.ctx.moveTo(x, 30);
-            this.ctx.lineTo(x, 30 + patternHeight);
+            this.ctx.moveTo(x, gridStartY);
+            this.ctx.lineTo(x, gridEndY + this.gridSize);
             this.ctx.stroke();
         }
         
-        for (let y = 30; y <= 30 + patternHeight; y += this.gridSize * 10) {
+        for (let y = gridStartY; y <= gridEndY + this.gridSize; y += this.gridSize * 10) {
             this.ctx.beginPath();
-            this.ctx.moveTo(30, y);
-            this.ctx.lineTo(30 + patternWidth, y);
+            this.ctx.moveTo(gridStartX, y);
+            this.ctx.lineTo(gridEndX + this.gridSize, y);
             this.ctx.stroke();
         }
         
@@ -346,25 +372,25 @@ class CrossStitchGenerator {
         this.ctx.strokeStyle = '#888888';
         this.ctx.lineWidth = 2;
         
-        for (let x = 30; x <= 30 + patternWidth; x += this.gridSize * 50) {
+        for (let x = gridStartX; x <= gridEndX + this.gridSize; x += this.gridSize * 50) {
             this.ctx.beginPath();
-            this.ctx.moveTo(x, 30);
-            this.ctx.lineTo(x, 30 + patternHeight);
+            this.ctx.moveTo(x, gridStartY);
+            this.ctx.lineTo(x, gridEndY + this.gridSize);
             this.ctx.stroke();
         }
         
-        for (let y = 30; y <= 30 + patternHeight; y += this.gridSize * 50) {
+        for (let y = gridStartY; y <= gridEndY + this.gridSize; y += this.gridSize * 50) {
             this.ctx.beginPath();
-            this.ctx.moveTo(30, y);
-            this.ctx.lineTo(30 + patternWidth, y);
+            this.ctx.moveTo(gridStartX, y);
+            this.ctx.lineTo(gridEndX + this.gridSize, y);
             this.ctx.stroke();
         }
         
         // Add fabric texture background
-        this.drawFabricTexture(patternWidth, patternHeight, fabricColor);
+        this.drawFabricTexture(patternWidth, patternHeight, fabricColor, startX, startY);
     }
     
-    drawFabricTexture(patternWidth, patternHeight, fabricColor) {
+    drawFabricTexture(patternWidth, patternHeight, fabricColor, startX, startY) {
         // Add subtle fabric texture to simulate Aida cloth
         const originalGlobalAlpha = this.ctx.globalAlpha;
         this.ctx.globalAlpha = 0.03;
@@ -375,8 +401,8 @@ class CrossStitchGenerator {
         
         // Create a subtle weave pattern
         this.ctx.fillStyle = textureColor;
-        for (let x = 30; x < 30 + patternWidth; x += 2) {
-            for (let y = 30; y < 30 + patternHeight; y += 2) {
+        for (let x = startX; x < startX + patternWidth; x += 2) {
+            for (let y = startY; y < startY + patternHeight; y += 2) {
                 if ((x + y) % 4 === 0) {
                     this.ctx.fillRect(x, y, 1, 1);
                 }

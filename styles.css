@@ -31,7 +31,7 @@ header {
 }
 
 header h1 {
-    color: #2c5530;
+    color: #6a4c93;
     font-size: 2.5em;
     margin-bottom: 10px;
     font-weight: 700;
@@ -60,7 +60,7 @@ main {
 }
 
 .controls-section h2 {
-    color: #2c5530;
+    color: #6a4c93;
     margin-bottom: 20px;
     font-size: 1.5em;
 }
@@ -94,7 +94,7 @@ input, textarea, select {
 
 input:focus, textarea:focus, select:focus {
     outline: none;
-    border-color: #2c5530;
+    border-color: #6a4c93;
 }
 
 .help-text {
@@ -123,7 +123,7 @@ input[type="checkbox"] {
 }
 
 button {
-    background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+    background: linear-gradient(135deg, #6a4c93 0%, #9d7db8 100%);
     color: white;
     border: none;
     padding: 12px 25px;
@@ -138,7 +138,7 @@ button {
 
 button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(44, 85, 48, 0.3);
+    box-shadow: 0 4px 15px rgba(106, 76, 147, 0.3);
 }
 
 button:active {
@@ -155,7 +155,7 @@ button:active {
 }
 
 .pattern-section h2 {
-    color: #2c5530;
+    color: #6a4c93;
     margin-bottom: 20px;
     font-size: 1.5em;
 }
@@ -172,7 +172,7 @@ button:active {
 }
 
 .zoom-controls button {
-    background: #4a7c59;
+    background: #9d7db8;
     color: white;
     border: none;
     padding: 8px 15px;
@@ -184,14 +184,14 @@ button:active {
 }
 
 .zoom-controls button:hover {
-    background: #2c5530;
+    background: #6a4c93;
     transform: none;
     box-shadow: none;
 }
 
 #zoom-level {
     font-weight: 600;
-    color: #2c5530;
+    color: #6a4c93;
     min-width: 50px;
     text-align: center;
 }
@@ -221,7 +221,7 @@ button:active {
     background: #f8f9fa;
     padding: 15px;
     border-radius: 8px;
-    border-left: 4px solid #2c5530;
+    border-left: 4px solid #6a4c93;
     margin-bottom: 15px;
 }
 
@@ -231,7 +231,7 @@ button:active {
 }
 
 .pattern-info span {
-    color: #2c5530;
+    color: #6a4c93;
     font-weight: 700;
 }
 
